@@ -1,0 +1,549 @@
+{
+	"info": {
+		"_postman_id": "todo-backend-complete",
+		"name": "Todo Backend API - Complete Collection",
+		"description": "Complete API collection for Todo Backend running on localhost:3000 - Production-grade Node.js backend with authentication and todo management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "todo-backend-complete"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    if (responseJson.data && responseJson.data.token) {",
+									"        pm.environment.set('auth_token', responseJson.data.token);",
+									"        pm.environment.set('user_id', responseJson.data.user.id);",
+									"        console.log('Auth token and user ID saved to environment');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user account. Automatically saves auth token and user ID to environment variables."
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const responseJson = pm.response.json();",
+									"    if (responseJson.data && responseJson.data.token) {",
+									"        pm.environment.set('auth_token', responseJson.data.token);",
+									"        pm.environment.set('user_id', responseJson.data.user.id);",
+									"        console.log('Auth token and user ID saved to environment');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login with email and password. Automatically saves auth token and user ID to environment variables."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						},
+						"description": "Get current authenticated user profile"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Updated\",\n  \"email\": \"john.updated@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"profile"
+							]
+						},
+						"description": "Update user profile information"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currentPassword\": \"SecurePass123\",\n  \"newPassword\": \"NewSecurePass123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/change-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"change-password"
+							]
+						},
+						"description": "Change user password"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for user management"
+		},
+		{
+			"name": "Todos",
+			"item": [
+				{
+					"name": "Get All Todos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/todos?page=1&limit=10&completed=false&priority=high&sortBy=createdAt&sortOrder=desc",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"todos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page (default: 10, max: 100)"
+								},
+								{
+									"key": "completed",
+									"value": "false",
+									"description": "Filter by completion status (true/false)"
+								},
+								{
+									"key": "priority",
+									"value": "high",
+									"description": "Filter by priority (low/medium/high)"
+								},
+								{
+									"key": "sortBy",
+									"value": "createdAt",
+									"description": "Sort field (createdAt/updatedAt/dueDate/priority/title)"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc",
+									"description": "Sort order (asc/desc)"
+								}
+							]
+						},
+						"description": "Get all todos with pagination and filtering options"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Todo Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/todos/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"todos",
+								"stats"
+							]
+						},
+						"description": "Get user todo statistics and analytics"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Todo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/todos/{{todo_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"todos",
+								"{{todo_id}}"
+							]
+						},
+						"description": "Get a single todo by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Todo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    if (responseJson.data && responseJson.data.todo && responseJson.data.todo._id) {",
+									"        pm.environment.set('todo_id', responseJson.data.todo._id);",
+									"        console.log('Todo ID saved to environment:', responseJson.data.todo._id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Complete project documentation\",\n  \"description\": \"Write comprehensive API documentation for the todo backend\",\n  \"priority\": \"high\",\n  \"dueDate\": \"2024-01-15T10:00:00.000Z\",\n  \"tags\": [\"work\", \"urgent\", \"documentation\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/todos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"todos"
+							]
+						},
+						"description": "Create a new todo item. Automatically saves the created todo ID to environment variables."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Todo",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Todo Title\",\n  \"description\": \"Updated description\",\n  \"priority\": \"medium\",\n  \"completed\": true,\n  \"tags\": [\"updated\", \"work\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/todos/{{todo_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"todos",
+								"{{todo_id}}"
+							]
+						},
+						"description": "Update an existing todo"
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Todo Completion",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/todos/{{todo_id}}/toggle",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"todos",
+								"{{todo_id}}",
+								"toggle"
+							]
+						},
+						"description": "Toggle todo completion status (checkbox functionality)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Single Todo",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/todos/{{todo_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"todos",
+								"{{todo_id}}"
+							]
+						},
+						"description": "Delete a single todo by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Completed Todos",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/todos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"todos"
+							]
+						},
+						"description": "Delete all completed todos for the authenticated user"
+					},
+					"response": []
+				}
+			],
+			"description": "Todo management endpoints with full CRUD operations"
+		},
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						},
+						"description": "Check server health and status"
+					},
+					"response": []
+				}
+			],
+			"description": "System endpoints for monitoring and health checks"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global pre-request script",
+					"console.log('Making request to:', pm.request.url.toString());"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"pm.test('Response time is less than 5000ms', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+					"});",
+					"",
+					"pm.test('Response has valid JSON', function () {",
+					"    pm.response.to.be.json;",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string",
+			"description": "Base URL for the Todo Backend API"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string",
+			"description": "JWT authentication token (automatically set after login/register)"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string",
+			"description": "Current user ID (automatically set after login/register)"
+		},
+		{
+			"key": "todo_id",
+			"value": "",
+			"type": "string",
+			"description": "Todo ID for testing single todo operations (automatically set after creating a todo)"
+		}
+	]
+}
