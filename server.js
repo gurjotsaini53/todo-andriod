@@ -28,12 +28,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-android-app.com'] // Replace with your Android app domain
-    : ['http://localhost:3000', 'http://localhost:8080'],
-  credentials: true
-}));
+app.use(cors());
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
